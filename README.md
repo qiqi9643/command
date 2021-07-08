@@ -10,3 +10,4 @@
 
 複製下載一個repo
   1.git clone https://github.com/qiqi9643/command，qiqi9643是username，command是repo名稱
+  2.會得到一個repo名稱的資料夾，進入資料夾後才是git repo的所在。
