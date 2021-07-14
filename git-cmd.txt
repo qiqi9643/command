@@ -1,0 +1,81 @@
+git log --oneline --author="Sherly"
+git log --oneline --author="Sherly\|Eddie"
+
+git commit -a -m "xxx",  -a只會處理原來就存在的檔案，
+因為原來不存在，也就是沒經過 add ，那麼該檔案是untracked的
+
+git rm welcome.html，送進暫存區
+git rm welcome.html --cached，脫離git控管，變成untracked
+用git status 觀察
+
+git add --all
+
+改檔名，對 Git 來說會被認為是兩個動作，
+一個是刪除 hello.html 檔案，
+一個是新增 world.html 檔案（變成 Untracked 狀態）
+git mv hello.html world.html
+
+Git 是根據檔案的「內容」去算出那個 SHA-1 的值，
+所以 Git 不是很在乎你的檔案叫什麼名字
+當你進行更改檔名的時候，Git 並沒有為此做出一個新的 Blob 物件，
+而僅是指向原來舊的那顆 Blob 物件。
+但因為檔名變了，所以會為此做出一顆新的 Tree 物件喔。
+
+修改最後一筆comment
+git commit --amend -m "Welcome To Facebook"
+對 Git 來說因為「Commit 的內容」改變了，
+所以 Git 會重新計算並產生一顆新的 Commit 物件，
+SHA-1 的值改變了
+那可以修改更早的紀錄嗎？可以的，只是就得使用 Rebase 指令來處理了
+
+雖然這只是改訊息，不管如何它就是修改了一次的歷史，
+所以請儘量不要在已經 Push 出去之後再修改，
+也就是說，好好書寫comment的內文
+==剛完成 Commit，但發現有一個檔案忘了加到
+    方法1
+    cinderella.html是 Untracked files:
+    git add cinderella.html
+    git commit --amend --no-edit
+    --amend把檔案併入最後一次的 Commit
+    --no-edit 參數的意思是指「我不要編輯 Commit 訊息」
+    方法2
+    git reset 把最後一次的 Commit 拆掉，加入新檔案後再重新 Commit。
+
+==有些檔案我不想放在 Git 裡面
+在專案目錄裡放一個 .gitignore 檔案，並且設定想要忽略的規則
+    # 忽略 secret.yml 檔案
+    secret.yml
+
+    # 忽略 config 目錄下的 database.yml 檔案
+    config/database.yml
+    已經建立好的常用.gitignore內容https://github.com/github/gitignore
+    git rm --cached 指令把建立.gitignore之前的檔案也納入規則
+    也是可以忽略這個規則git add -f 檔案名稱
+    清除那些已經被忽略的檔案git clean -fX (f是force的意思)
+
+==檢視特定檔案的 Commit 紀錄
+git log
+git log welcome.html
+
+git log -p welcome.html  -p 參數看這個檔案每次的 Commit 做了什麼修改
+
+==這行程式誰寫的？
+git blame 指令
+git blame index.html
+git blame -L 5,10 index.html ，-L 參數，只顯示指定行數   
+
+==救回刪掉的檔案
+當檔案都commit之後，git就有紀錄了
+del test02.txt
+用git status觀察，它是deleted狀態
+用 git checkout就可以把它救回來了
+git checkout . 可以救回所有的檔案
+
+==退回到先前的版本
+先用 git log --oneline查出歷史紀錄
+git reset --hard HEAD~~， 一個~表示往前1次的紀錄
+git reset 1d01f3c ，直接指定位置
+
+後悔了，要恢復，
+先用 git reflog查出被刪的位置代碼(也可以用git log  --oneline -g)
+git reset --hard 1d01f3c，就會回到1d01f3c的位置了
